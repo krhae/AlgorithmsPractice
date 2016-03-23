@@ -9,8 +9,6 @@ public class MergeSort {
 	public static final boolean VERBOSE = true;
 	
 	public static final ArrayList<Integer> inversionList = new ArrayList<Integer>();
-	
-	public static final int NUM_INVERSION_TEST = 6;
 		
 	/*
 	 * MergeSort Class
@@ -40,9 +38,8 @@ public class MergeSort {
 		inversionList.add( 4 );
 		inversionList.add( 1 );
 		inversionList.add( 3 );
-		//inversionList.add( 5 );
-		//inversionList.add( 0 );
-		//inversionList.add(-1);
+		inversionList.add( 5 );
+		inversionList.add( 0 );
 		
 		if(VERBOSE)
 			System.out.println("Inital Array: " + inversionList.toString());
@@ -98,16 +95,11 @@ public class MergeSort {
 		ArrayList<Integer> sortedList = new ArrayList<Integer>();
 		ArrayList<Integer> listOneArray = listOne.getArray();
 		ArrayList<Integer> listTwoArray = listTwo.getArray();
-		int listOneNum = listOne.getNumInversions();
-		int listTwoNum = listTwo.getNumInversions();
+
+		int count = 0;
 		
-		if ( listOneArray.get(listOneArray.size() - 1) > listTwoArray.get(0) && (listOneArray.size() > 1 && listTwoArray.size() > 1)) {
-			listTwoNum++;
-			
-			if(VERBOSE)
-				System.out.println("Pair: (" + listOneArray.get(listOneArray.size() - 1) + ", " + listTwoArray.get(0) + ")");
-			
-		}
+		count += listOne.getNumInversions();
+		count += listTwo.getNumInversions();
 		
 		while ( listOneArray.size() > 0 && listTwoArray.size() > 0 ) {
 			
@@ -115,9 +107,8 @@ public class MergeSort {
 				sortedList.add(listOneArray.get(0));
 				listOneArray.remove(0);
 			} else {
-				listTwoNum++;
-				if(VERBOSE)
-					System.out.println("Pair: (" + listOneArray.get(0) + ", " + listTwoArray.get(0) + ")");
+				count += listOneArray.size();
+							
 				sortedList.add(listTwoArray.get(0));
 				listTwoArray.remove(0);
 			}
@@ -133,6 +124,6 @@ public class MergeSort {
 			listTwoArray.remove(0);
 		}
 		
-		return new MergeSort( listOneNum + listTwoNum, sortedList );
+		return new MergeSort( count, sortedList );
 	}
 }
