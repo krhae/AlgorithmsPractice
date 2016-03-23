@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-import java.util.List;
-
 
 // Req's: - Count number of inversions
 // Inversion: a pair of items in an array such that Ai preceeds Aj, and i < j, such that Ai > Aj
 
 
 public class MergeSort {
+	
+	public static final boolean VERBOSE = true;
 	
 	public static final ArrayList<Integer> inversionList = new ArrayList<Integer>();
 	
@@ -31,16 +31,21 @@ public class MergeSort {
 		return this.currentArray;
 	}
 	
+	public void increaseNumInversions( int num ) {
+		this.numInversions = num;
+	}
+	
 	public static void initializeArrayList () {
-		inversionList.add( 10 ); 
-		inversionList.add( 9 );
-		inversionList.add( 8 );
-		inversionList.add( 7 );
+		inversionList.add( 2 ); 
+		inversionList.add( 4 );
+		inversionList.add( 1 );
+		inversionList.add( 3 );
+		//inversionList.add( 5 );
+		//inversionList.add( 0 );
+		//inversionList.add(-1);
 		
-		inversionList.add( 6 );
-		inversionList.add( 2 );
-		inversionList.add( 11 );
-		inversionList.add( 3 );	
+		if(VERBOSE)
+			System.out.println("Inital Array: " + inversionList.toString());
 	}
 	
 	/*
@@ -48,7 +53,6 @@ public class MergeSort {
 	 */
 	public static MergeSort mergeSort ( MergeSort mergeSortObj ) {
 		
-		int numInversions = mergeSortObj.getNumInversions();
 		int leftNumInversions = 0;
 		int rightNumInversions = 0;
 		
@@ -56,6 +60,7 @@ public class MergeSort {
 		
 		MergeSort leftMergeSort;
 		MergeSort rightMergeSort;
+		MergeSort totalMergeSort;
 		
 		ArrayList<Integer> leftSide = new ArrayList<Integer>();
 		ArrayList<Integer> rightSide = new ArrayList<Integer>();
@@ -63,15 +68,15 @@ public class MergeSort {
 		// If length is 1, the array is considered sorted
 		// There are no inversions (need a pair)
 		if ( array.size() == 1 )
-			return new MergeSort( numInversions, array );
+			return new MergeSort( 0, array );
 		
 		// Split Array
-		for ( int i = 0; i < array.size(); i++ ) {
-			
-			if( i % 2 == 0 ) 
-				leftSide.add(array.get(i));
-			else 
-				rightSide.add(array.get(i));
+		for ( int i = 0; i < array.size()/2; i++ ) {
+			leftSide.add(array.get(i)); 
+		}
+		
+		for ( int j = array.size()/2; j < array.size(); j++ ) {			
+			rightSide.add(array.get(j));
 		}
 				
 		// Recursively sort both Lists
@@ -81,8 +86,10 @@ public class MergeSort {
 		leftMergeSort = mergeSort(leftMergeSort);
 		rightMergeSort = mergeSort(rightMergeSort);
 		
+		totalMergeSort = mergeSortedLists(leftMergeSort, rightMergeSort);
+		
 		// Merge Lists
-		return mergeSortedLists(leftMergeSort, rightMergeSort);
+		return new MergeSort( totalMergeSort.getNumInversions() , totalMergeSort.getArray() );
 	}
 	
 	
@@ -91,6 +98,16 @@ public class MergeSort {
 		ArrayList<Integer> sortedList = new ArrayList<Integer>();
 		ArrayList<Integer> listOneArray = listOne.getArray();
 		ArrayList<Integer> listTwoArray = listTwo.getArray();
+		int listOneNum = listOne.getNumInversions();
+		int listTwoNum = listTwo.getNumInversions();
+		
+		if ( listOneArray.get(listOneArray.size() - 1) > listTwoArray.get(0) && (listOneArray.size() > 1 && listTwoArray.size() > 1)) {
+			listTwoNum++;
+			
+			if(VERBOSE)
+				System.out.println("Pair: (" + listOneArray.get(listOneArray.size() - 1) + ", " + listTwoArray.get(0) + ")");
+			
+		}
 		
 		while ( listOneArray.size() > 0 && listTwoArray.size() > 0 ) {
 			
@@ -98,6 +115,9 @@ public class MergeSort {
 				sortedList.add(listOneArray.get(0));
 				listOneArray.remove(0);
 			} else {
+				listTwoNum++;
+				if(VERBOSE)
+					System.out.println("Pair: (" + listOneArray.get(0) + ", " + listTwoArray.get(0) + ")");
 				sortedList.add(listTwoArray.get(0));
 				listTwoArray.remove(0);
 			}
@@ -113,6 +133,6 @@ public class MergeSort {
 			listTwoArray.remove(0);
 		}
 		
-		return new MergeSort( listOne.getNumInversions() + listTwo.getNumInversions(), sortedList );
+		return new MergeSort( listOneNum + listTwoNum, sortedList );
 	}
 }
